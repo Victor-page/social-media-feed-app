@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { postAdded } from './postsSlice';
+import { addNewPost } from './postsSlice';
 
 const AddPostForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [userId, setUserId] = useState('');
+  const [addRequestStatus, setAddRequestStatus] = useState('idle');
 
   const dispatch = useDispatch();
 
@@ -19,15 +20,29 @@ const AddPostForm = () => {
   const resetForm = () => {
     setTitle('');
     setContent('');
+    setUserId('');
   };
 
-  const onSavePostSubmitted = (event) => {
+  const canSave =
+    [title, content, userId].every(Boolean) && addRequestStatus === 'idle';
+
+  const onSavePostSubmitted = async (event) => {
     event.preventDefault();
-    title && content && dispatch(postAdded(title, content, userId));
-    resetForm();
-  };
 
-  const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
+    if (!canSave) {
+      return;
+    }
+
+    try {
+      setAddRequestStatus('pending');
+      await dispatch(addNewPost({ title, content, user: userId })).unwrap();
+    } catch (error) {
+      console.error('Failed to save the post: ', error);
+    } finally {
+      resetForm();
+      setAddRequestStatus('idle');
+    }
+  };
 
   const userListOptions = usersList.map(({ id, name }) => (
     <option key={id} value={id}>
