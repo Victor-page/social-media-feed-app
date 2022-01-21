@@ -1,5 +1,4 @@
 {
-  "homepage": "https://victor-page.github.io/social-media-feed-app/",
   "name": "redux-essentials-example",
   "version": "1.0.0",
   "private": true,
@@ -26,7 +25,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -6,10 +6,10 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './app/Navbar';
-import AddPostForm from './features/postList/AddPostForm';
-import PostList from './features/postList/PostList';
-import SinglePostPage from './features/postList/SinglePostPage';
-import EditPostForm from './features/postList/EditPostForm';
+import AddPostForm from './features/posts/AddPostForm';
+import PostList from './features/posts/PostList';
+import SinglePostPage from './features/posts/SinglePostPage';
+import EditPostForm from './features/posts/EditPostForm';
 
 function App() {
   return (
