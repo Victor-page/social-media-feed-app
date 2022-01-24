@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import TimeAgo from './TimeAgo';
 import { selectAllPosts, fetchPosts } from './postsSlice';
 import { Spinner } from '../../components/Spinner';
 
-const PostExcerpt = ({ post }) => (
+let PostExcerpt = ({ post }) => (
   <article>
     <h3>{post.title}</h3>
     <div>
@@ -23,6 +23,8 @@ const PostExcerpt = ({ post }) => (
     </Link>
   </article>
 );
+
+PostExcerpt = memo(PostExcerpt);
 
 const PostsList = () => {
   const dispatch = useDispatch();

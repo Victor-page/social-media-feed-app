@@ -1,7 +1,19 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from '@reduxjs/toolkit';
 import { client } from '../../api/client';
 
-const initialState = { postList: [], status: 'idle', error: null };
+const postsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => b.date.localeCompare(a.date),
+});
+
+const initialState = postsAdapter.getInitialState({
+  status: 'idle',
+  error: null,
+});
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   const response = await client.get('fakeApi/posts');
@@ -24,7 +36,7 @@ const { reducer, actions } = createSlice({
   reducers: {
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
-      const existingPost = state.postList.find((post) => post.id === id);
+      const existingPost = state.entities[id];
       if (existingPost) {
         existingPost.title = title;
         existingPost.content = content;
@@ -32,7 +44,7 @@ const { reducer, actions } = createSlice({
     },
     reactionAdded(state, action) {
       const { postId, reaction } = action.payload;
-      const existingPost = state.postList.find((post) => post.id === postId);
+      const existingPost = state.entities[postId];
       existingPost && existingPost.reactions[reaction]++;
     },
   },
@@ -44,16 +56,14 @@ const { reducer, actions } = createSlice({
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.status = 'succeeded';
 
-        state.postList = state.postList.concat(action.payload);
+        postsAdapter.upsertMany(state, action.payload);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });
 
-    builder.addCase(addNewPost.fulfilled, (state, action) => {
-      state.postList.push(action.payload);
-    });
+    builder.addCase(addNewPost.fulfilled, postsAdapter.addOne);
   },
 });
 
@@ -61,9 +71,13 @@ export const { postAdded, postUpdated, reactionAdded } = actions;
 
 export default reducer;
 
-export const selectAllPosts = (state) => {
-  return state.posts.postList;
-};
+export const {
+  selectAll: selectAllPosts,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+} = postsAdapter.getSelectors((state) => state.posts);
 
-export const selectPostById = (state, postId) =>
-  state.posts.postList.find((post) => post.id === postId);
+export const selectPostsByUser = createSelector(
+  [selectAllPosts, (state, userId) => userId],
+  (postList, userId) => postList.filter((post) => post.user === userId)
+);
