@@ -1,34 +1,37 @@
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import PostAuthor from './PostAuthor';
 import ReactionButtons from './ReactionButtons';
 import TimeAgo from './TimeAgo';
-import { selectAllPosts, fetchPosts } from './postsSlice';
+import { fetchPosts, selectPostIds, selectPostById } from './postsSlice';
 import { Spinner } from '../../components/Spinner';
 
-let PostExcerpt = ({ post }) => (
-  <article>
-    <h3>{post.title}</h3>
-    <div>
-      <PostAuthor userId={post.user} />
-      <TimeAgo timestamp={post.date} />
-    </div>
-    <p className="post-content">{post.content.substring(0, 100)}</p>
+const PostExcerpt = ({ postId }) => {
+  const post = useSelector((state) => selectPostById(state, postId));
+  const { title, user, date, id, content } = post;
 
-    <ReactionButtons post={post} />
-    <Link to={`/posts/${post.id}`} className="button muted-button">
-      View Post
-    </Link>
-  </article>
-);
+  return (
+    <article>
+      <h3>{title}</h3>
+      <div>
+        <PostAuthor userId={user} />
+        <TimeAgo timestamp={date} />
+      </div>
+      <p className="post-content">{content.substring(0, 100)}</p>
 
-PostExcerpt = memo(PostExcerpt);
+      <ReactionButtons post={post} />
+      <Link to={`/posts/${id}`} className="button muted-button">
+        View Post
+      </Link>
+    </article>
+  );
+};
 
 const PostsList = () => {
   const dispatch = useDispatch();
-  const postList = useSelector(selectAllPosts);
+  const orderedPostIds = useSelector(selectPostIds);
 
   const postStatus = useSelector((state) => state.posts.status);
   const error = useSelector((state) => state.posts.error);
@@ -44,12 +47,8 @@ const PostsList = () => {
   if (postStatus === 'loading') {
     content = <Spinner text="Loading..." />;
   } else if (postStatus === 'succeeded') {
-    const orderedPosts = postList
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date));
-
-    content = orderedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
+    content = orderedPostIds.map((postId) => (
+      <PostExcerpt key={postId} postId={postId} />
     ));
   } else if (postStatus === 'failed') {
     content = <p>{error}</p>;
