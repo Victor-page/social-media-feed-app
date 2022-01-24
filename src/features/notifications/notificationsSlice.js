@@ -42,9 +42,6 @@ const { reducer, actions } = createSlice({
         // Any notifications we've read are no longer new
         (notification) => (notification.isNew = !notification.read)
       );
-
-      // Sort with newest first
-      state.sort((a, b) => b.date.localeCompare(a.date));
     },
   },
   // extraReducers(builder) {
