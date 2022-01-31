@@ -4,7 +4,7 @@ import PostAuthor from './PostAuthor';
 import ReactionButtons from './ReactionButtons';
 import TimeAgo from './TimeAgo';
 import { Spinner } from '../../components/Spinner';
-import { useGetPostQuery } from '../api/apiSlice';
+import { useGetPostQuery } from '../posts/postsSlice';
 
 const SinglePostPage = ({ match }) => {
   const { postId } = match.params;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAllUsers } from '../users/usersSlice';
-import { useAddNewPostMutation } from '../api/apiSlice';
+import { useAddNewPostMutation } from '../posts/postsSlice';
 
 const AddPostForm = () => {
   const [title, setTitle] = useState('');

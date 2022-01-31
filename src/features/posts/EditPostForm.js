@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useGetPostQuery, useEditPostMutation } from '../api/apiSlice';
+import { useGetPostQuery, useEditPostMutation } from '../posts/postsSlice';
 
 const EditPostForm = ({ match }) => {
   const { postId } = match.params;
