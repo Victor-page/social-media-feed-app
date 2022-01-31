@@ -1,16 +1,18 @@
 import { useLayoutEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  selectAllNotifications,
   allNotificationsRead,
+  useGetNotificationsQuery,
 } from './notificationsSlice';
 import NotificationItem from './NotificationItem';
+import { selectMetadataEntities } from './notificationsSlice';
 
 const NotificationsList = () => {
   const dispatch = useDispatch();
 
-  const notifications = useSelector(selectAllNotifications);
+  const { data: notifications = [] } = useGetNotificationsQuery();
+  const notificationsMetadata = useSelector(selectMetadataEntities);
 
   useLayoutEffect(() => {
     dispatch(allNotificationsRead());
@@ -19,13 +21,13 @@ const NotificationsList = () => {
   return (
     <section>
       <h2>Notifications</h2>
-      {notifications.map(({ date, message, id, user, isNew }) => (
+      {notifications.map(({ date, message, id, user }) => (
         <NotificationItem
           notificationDate={date}
           notificationMessage={message}
           key={id}
           notificationUser={user}
-          isNewNotification={isNew}
+          isNew={notificationsMetadata[id].isNew}
         />
       ))}
     </section>

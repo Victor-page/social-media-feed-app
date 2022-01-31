@@ -11,7 +11,7 @@ import PostList from './features/posts/PostList';
 import SinglePostPage from './features/posts/SinglePostPage';
 import EditPostForm from './features/posts/EditPostForm';
 import UsersList from './features/users/UsersList';
-import UserPage from './features/users/UserPage';
+import UsersPage from './features/users/UsersPage';
 import NotificationsList from './features/notifications/NotificationsList';
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
           <Route exact path="/posts/:postId" component={SinglePostPage} />
           <Route exact path="/edit-post/:postId" component={EditPostForm} />
           <Route exact path="/users" component={UsersList} />
-          <Route exact path="/users/:userId" component={UserPage} />
+          <Route exact path="/users/:userId" component={UsersPage} />
           <Route exact path="/notifications" component={NotificationsList} />
           <Redirect to="/" />
         </Switch>

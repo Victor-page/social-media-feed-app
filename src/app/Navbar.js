@@ -2,19 +2,25 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  fetchNotifications,
-  selectAllNotifications,
+  fetchNotificationsWebsocket,
+  selectNotificationsMetadata,
+  useGetNotificationsQuery,
 } from '../features/notifications/notificationsSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const notifications = useSelector(selectAllNotifications);
 
-  const fetchNewNotifications = () => dispatch(fetchNotifications());
+  // Trigger initial fetch of notifications and keep the websocket open to receive updates
+  useGetNotificationsQuery();
 
-  const numUnreadNotifications = notifications.filter(
+  const notificationsMetadata = useSelector(selectNotificationsMetadata);
+  const numUnreadNotifications = notificationsMetadata.filter(
     (notification) => !notification.read
   ).length;
+
+  const fetchNewNotifications = () => {
+    dispatch(fetchNotificationsWebsocket());
+  };
 
   let unreadNotificationsBadge;
 

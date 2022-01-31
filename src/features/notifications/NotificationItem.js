@@ -8,7 +8,7 @@ const NotificationItem = ({
   notificationDate,
   notificationMessage,
   notificationUser,
-  isNewNotification,
+  isNew,
 }) => {
   const users = useSelector(selectAllUsers);
 
@@ -19,7 +19,7 @@ const NotificationItem = ({
   };
 
   const notificationClassname = classNames('notification', {
-    new: isNewNotification,
+    new: isNew,
   });
 
   return (

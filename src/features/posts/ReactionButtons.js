@@ -1,6 +1,4 @@
-import { useDispatch } from 'react-redux';
-
-import { reactionAdded } from './postsSlice';
+import { useAddReactionMutation } from '../api/apiSlice';
 
 const reactionEmoji = {
   thumbsUp: '👍',
@@ -11,21 +9,27 @@ const reactionEmoji = {
 };
 
 const ReactionButtons = ({ post }) => {
-  const dispatch = useDispatch();
+  const [addReaction] = useAddReactionMutation();
 
-  const onReactionAdded = (id, name) =>
-    dispatch(reactionAdded({ postId: id, reaction: name }));
+  const reactionButtons = Object.entries(reactionEmoji).map(
+    ([reactionName, emoji]) => {
+      // debugger;
 
-  const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => (
-    <button
-      key={name}
-      type="button"
-      className="muted-button reaction-button"
-      onClick={onReactionAdded.bind(null, post.id, name)}
-    >
-      {emoji} {post.reactions[name]}
-    </button>
-  ));
+      const onAddReaction = () =>
+        addReaction({ postId: post.id, reaction: reactionName });
+
+      return (
+        <button
+          key={reactionName}
+          type="button"
+          className="muted-button reaction-button"
+          onClick={onAddReaction}
+        >
+          {emoji} {post.reactions[reactionName]}
+        </button>
+      );
+    }
+  );
 
   return <div>{reactionButtons}</div>;
 };
