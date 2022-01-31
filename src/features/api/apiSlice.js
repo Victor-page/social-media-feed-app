@@ -46,7 +46,11 @@ export const apiSlice = createApi({
       async onQueryStarted({ postId, reaction }, { dispatch, queryFulfilled }) {
         const updateCachedData = (draft) => {
           const post = draft.find((post) => post.id === postId);
-          post && post.reactions[reaction]++;
+          if (post) {
+            const { reactions } = post;
+            const currentAmount = reactions[reaction];
+            reactions[reaction] = currentAmount + 1;
+          }
         };
 
         const patchResult = dispatch(

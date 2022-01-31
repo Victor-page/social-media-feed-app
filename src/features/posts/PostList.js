@@ -12,7 +12,7 @@ const PostExcerpt = ({ post }) => {
   const { title, user, date, id, content } = post;
 
   return (
-    <article>
+    <article className="post-excerpt">
       <h3>{title}</h3>
       <div>
         <PostAuthor userId={user} />
@@ -36,7 +36,7 @@ const PostsList = () => {
     isSuccess,
     isError,
     error,
-    refetch,
+    // refetch,
   } = useGetPostsQuery();
 
   const sortedPosts = useMemo(() => {
@@ -51,23 +51,25 @@ const PostsList = () => {
   if (isLoading) {
     content = <Spinner text="Loading..." />;
   } else if (isSuccess) {
-    const renderedPosts = sortedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
-    ));
-
     const containerClassname = classNames('posts-container', {
       disabled: isFetching,
     });
 
-    content = <div className={containerClassname}>{renderedPosts}</div>;
+    content = (
+      <div className={containerClassname}>
+        {sortedPosts.map((post) => (
+          <PostExcerpt key={post.id} post={post} />
+        ))}
+      </div>
+    );
   } else if (isError) {
     content = <p>{error.toString()}</p>;
   }
 
   return (
-    <section className="post-list">
+    <section className="posts-list">
       <h2>Posts</h2>
-      <button onClick={refetch}>Refetch Posts</button>
+      {/* <button onClick={refetch}>Refetch Posts</button> */}
       {content}
     </section>
   );

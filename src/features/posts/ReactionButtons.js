@@ -13,8 +13,6 @@ const ReactionButtons = ({ post }) => {
 
   const reactionButtons = Object.entries(reactionEmoji).map(
     ([reactionName, emoji]) => {
-      // debugger;
-
       const onAddReaction = () =>
         addReaction({ postId: post.id, reaction: reactionName });
 
